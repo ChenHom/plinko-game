@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { binColorsByRowCount, binPayouts } from '$lib/constants/game';
+  import { binColorsByRowCount } from '$lib/constants/game';
+  import { binPayouts } from '$lib/stores/config';
   import { plinkoEngine, riskLevel, rowCount, winRecords } from '$lib/stores/game';
   import { isAnimationOn } from '$lib/stores/settings';
   import type { Action } from 'svelte/action';

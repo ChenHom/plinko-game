@@ -1,4 +1,4 @@
-import { binPayouts } from '$lib/constants/game';
+import { binPayouts as binPayoutsStore } from '$lib/stores/config';
 import {
   rowCount,
   winRecords,
@@ -256,7 +256,8 @@ class PlinkoEngine {
     const binIndex = this.pinsLastRowXCoords.findLastIndex((pinX) => pinX < ball.position.x);
     if (binIndex !== -1 && binIndex < this.pinsLastRowXCoords.length - 1) {
       const betAmount = get(betAmountOfExistingBalls)[ball.id] ?? 0;
-      const multiplier = binPayouts[this.rowCount][this.riskLevel][binIndex];
+      const payouts = get(binPayoutsStore);
+      const multiplier = payouts[this.rowCount][this.riskLevel][binIndex];
       const payoutValue = betAmount * multiplier;
       const profit = payoutValue - betAmount;
 

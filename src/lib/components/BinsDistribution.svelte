@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { binPayouts, binProbabilitiesByRowCount, type RowCount } from '$lib/constants/game';
+  import { binProbabilitiesByRowCount, type RowCount } from '$lib/constants/game';
+  import { binPayouts } from '$lib/stores/config';
   import { binProbabilities, rowCount } from '$lib/stores/game';
   import { RiskLevel } from '$lib/types';
   import { dotProduct } from '$lib/utils/numbers';
@@ -18,7 +19,7 @@
     rowCount: RowCount,
     riskLevel: RiskLevel,
     binProbabilities: number[],
-  ) => dotProduct(binPayouts[rowCount][riskLevel], binProbabilities);
+  ) => dotProduct($binPayouts[rowCount][riskLevel], binProbabilities);
 
   const initChart: Action<
     HTMLCanvasElement,

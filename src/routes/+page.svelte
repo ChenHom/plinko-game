@@ -7,9 +7,11 @@
   import Sidebar from '$lib/components/Sidebar';
   import { setBalanceFromLocalStorage, writeBalanceToLocalStorage } from '$lib/utils/game';
   import GitHubLogo from 'phosphor-svelte/lib/GithubLogo';
+  import { fetchConfig } from '$lib/stores/config';
 
   $effect(() => {
     setBalanceFromLocalStorage();
+    fetchConfig();
   });
 </script>
 
