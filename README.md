@@ -96,6 +96,14 @@ For end-to-end tests powered by [Playwright](https://playwright.dev/):
    pnpm test:e2e
    ```
 
+### Backend configuration
+
+The game loads payout multipliers from a configurable endpoint. Set `VITE_CONFIG_ENDPOINT`
+to your backend URL and `VITE_CONFIG_TOKEN` if the endpoint requires authentication.
+When running on a server, the built-in `/api/config` route will read `BIN_PAYOUTS_JSON`
+from environment variables to override the default table. Use HTTPS and protected
+tokens to ensure only authorized backends can modify the payouts.
+
 ### Benchmark
 
 A hidden page is only available in local dev environment to benchmark the payout probabilities and expected values. I used this page to tune the parameters of the matter-js physics engine and control the expected payout.
