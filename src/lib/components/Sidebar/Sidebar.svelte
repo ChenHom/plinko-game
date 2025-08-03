@@ -64,7 +64,21 @@
     }
   }
 
-  function autoBetDropBall() {
+  async function requestAndDropBall() {
+    const res = await fetch('/api/play', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        rowCount: $rowCount,
+        riskLevel: $riskLevel,
+        betAmount: $betAmount,
+      }),
+    });
+    const data = await res.json();
+    $plinkoEngine?.dropBall(data.binIndex);
+  }
+
+  async function autoBetDropBall() {
     if (isBetExceedBalance) {
       resetAutoBetInterval();
       return;
@@ -72,13 +86,13 @@
 
     // Infinite mode
     if (autoBetsLeft === null) {
-      $plinkoEngine?.dropBall();
+      await requestAndDropBall();
       return;
     }
 
     // Finite mode
     if (autoBetsLeft > 0) {
-      $plinkoEngine?.dropBall();
+      await requestAndDropBall();
       autoBetsLeft -= 1;
     }
     if (autoBetsLeft === 0 && autoBetInterval !== null) {
@@ -97,12 +111,12 @@
     }
   };
 
-  function handleBetClick() {
+  async function handleBetClick() {
     if (betMode === BetMode.MANUAL) {
-      $plinkoEngine?.dropBall();
+      await requestAndDropBall();
     } else if (autoBetInterval === null) {
       autoBetsLeft = autoBetInput === 0 ? null : autoBetInput;
-      autoBetInterval = setInterval(autoBetDropBall, autoBetIntervalMs);
+      autoBetInterval = setInterval(() => void autoBetDropBall(), autoBetIntervalMs);
     } else if (autoBetInterval !== null) {
       resetAutoBetInterval();
     }

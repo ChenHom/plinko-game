@@ -63,6 +63,8 @@ class PlinkoEngine {
    */
   private sensor: Matter.Body;
 
+  private ballResults: Record<number, { binIndex: number }> = {};
+
   /**
    * The x-coordinates of every pin's center in the last row. Useful for calculating
    * which bin a ball falls into.
@@ -182,7 +184,7 @@ class PlinkoEngine {
   /**
    * Drops a new ball from the top with a random horizontal offset, and deducts the balance.
    */
-  dropBall() {
+  dropBall(binIndex: number) {
     const ballOffsetRangeX = this.pinDistanceX * 0.8;
     const ballRadius = this.pinRadius * 2;
     const { friction, frictionAirByRowCount } = PlinkoEngine.ballFrictions;
@@ -209,6 +211,7 @@ class PlinkoEngine {
     );
     Matter.Composite.add(this.engine.world, ball);
 
+    this.ballResults[ball.id] = { binIndex };
     betAmountOfExistingBalls.update((value) => ({ ...value, [ball.id]: this.betAmount }));
     balance.update((balance) => balance - this.betAmount);
   }
@@ -253,7 +256,10 @@ class PlinkoEngine {
    * Called when a ball hits the invisible sensor at the bottom.
    */
   private handleBallEnterBin(ball: Matter.Body) {
-    const binIndex = this.pinsLastRowXCoords.findLastIndex((pinX) => pinX < ball.position.x);
+    const result = this.ballResults[ball.id];
+    const binIndex =
+      result?.binIndex ??
+      this.pinsLastRowXCoords.findLastIndex((pinX) => pinX < ball.position.x);
     if (binIndex !== -1 && binIndex < this.pinsLastRowXCoords.length - 1) {
       const betAmount = get(betAmountOfExistingBalls)[ball.id] ?? 0;
       const payouts = get(binPayoutsStore);
@@ -282,6 +288,7 @@ class PlinkoEngine {
       balance.update((balance) => balance + payoutValue);
     }
 
+    delete this.ballResults[ball.id];
     Matter.Composite.remove(this.engine.world, ball);
     betAmountOfExistingBalls.update((value) => {
       const newValue = { ...value };
