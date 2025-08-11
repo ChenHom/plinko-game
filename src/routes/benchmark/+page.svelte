@@ -9,13 +9,19 @@
 
   let ballsDropped = $state(0);
 
-  function dropSingleBall() {
-    $plinkoEngine?.dropBall();
+  async function dropSingleBall() {
+    const res = await fetch('/api/play', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rowCount: $rowCount, riskLevel: $riskLevel, betAmount: 0 }),
+    });
+    const data = await res.json();
+    $plinkoEngine?.dropBall(data.binIndex);
     ballsDropped += 1;
   }
 
   function startDropBallInterval() {
-    dropBallInterval = setInterval(dropSingleBall, 10);
+    dropBallInterval = setInterval(() => void dropSingleBall(), 10);
   }
 
   function stopDropBallInterval() {

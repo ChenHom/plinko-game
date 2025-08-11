@@ -69,3 +69,13 @@ plinko-game/
 ---
 
 感謝您的參與與支持！
+
+## 開發記錄
+
+### codex/add-api-for-ball-drop-point-retrieval
+
+- 新增 `/api/play` POST API，接收 `rowCount`，回傳隨機 `binIndex` 並簽章結果
+- 更新 `PlinkoEngine` 支援使用後端提供的 `binIndex` 進行落球，並計算對應的中獎倍數、獲利和更新餘額
+- 將 `riskLevel` 與 `betAmount` 一併傳送至 API，並在 Sidebar 與 Benchmark 頁面同步更新請求參數
+- 新增 Vitest 單元測試，驗證 `/api/play` 回傳的 `binIndex` 範圍正確
+- 新增 Playwright E2E 測試，用以模擬後端回傳 `binIndex` 並檢查前端正確落球與顯示對應獎勵
